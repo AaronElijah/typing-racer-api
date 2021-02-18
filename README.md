@@ -10,11 +10,16 @@ My game is very simple - you sign up with any username and then TypingDNA verifi
 
 I have always been a fan of type racers and find them a great way to improve keyboard speed and stop silly errors creeping into my documents and blog posts. Once I heard about TypingDNA figuring out a way to record and verify someone based on the way they type on their keyboard, I knew that I had to give it a try
 
+## How did you build it?
+
+* I used [FastAPI](https://fastapi.tiangolo.com/) to create the backend
+* The frontend [client](https://github.com/AaronElijah/typing-racer-client) was built in ReactJS.
+
 ## Will I need anything to play the game?
 
 Just a computer with a keyboard. Follow the instructions to get yourself set up with a Free Developer account at TypingDNA (instructions on [Typing Racer API](https://github.com/AaronElijah/typing-racer-api))
 
-## Get started with the game
+## Get started with the game locally
 
 1) Go to [TypingDNA](https://www.typingdna.com/clients/login) and sign up for a Developer Account
 
@@ -36,7 +41,7 @@ export TYPING_DNA_SECRET_KEY=<your secret key>
 ```
 uvicorn main:app --reload
 ```
-
+7) Follow commands in [Typing Racer Client](https://github.com/AaronElijah/typing-racer-client) to start running the frontend
 
 
 
