@@ -1,4 +1,5 @@
 import base64
+import threading
 from hashlib import blake2b
 from http import HTTPStatus
 
@@ -26,7 +27,20 @@ def login(
 ) -> LoginResponseSchema:
     email = login_data.email
     db = auth_utils.read_users_from_db()
+
+    print('********')
+    print('Old db')
+    print(db)
+    print('********')
+    user_from_db = auth_utils.read_user_from_db(user_email=login_data.email)
+    print(user_from_db)
+    print('********')
+
+
+    # We can replace with call to db
     user_info = next(filter(lambda info: info.get('email') == email, db), None)
+
+
     if not user_info:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
@@ -45,14 +59,29 @@ def signup(
 ) -> SignupResponseSchema:
     email = signup_data.email
     db = auth_utils.read_users_from_db()
+
+    print('********')
+    print('Old db')
+    print(db)
+    print('********')
+    user_from_db = auth_utils.read_user_from_db(user_email=signup_data.email)
+    print(user_from_db)
+    print('********')
+
     db_emails = map(lambda user_info: user_info.get('email'), db)
     if email in db_emails:
         raise HTTPException(
             status_code=HTTPStatus.CONFLICT,
             detail='Conflict: user already exists',
         )
-    new_user = [email, False]
-    auth_utils.write_new_user_to_db(new_user=new_user)
+    new_user = {'email': email, 'is_verify': False}
+    auth_utils.write_new_user_to_db_old(new_user=new_user)
+
+    print('*******')
+    print('Write to dynamodb')
+    response = auth_utils.write_new_user_to_db(new_user=new_user)
+    print(response)
+    print('*******')
 
     return SignupResponseSchema(is_success=True, email=email, is_verified=False)
 
@@ -62,6 +91,15 @@ def verify(
     verify_data: VerifyRequestSchema = Body(...),
 ) -> VerifyResponseSchema:
     db = auth_utils.read_users_from_db()
+
+    print('********')
+    print('Old db')
+    print(db)
+    print('********')
+    user_from_db = auth_utils.read_user_from_db(user_email=verify_data.email)
+    print(user_from_db)
+    print('********')
+
     user_info = next(filter(lambda info: info.get('email') == verify_data.email, db), None)
     if not user_info:
         raise HTTPException(
@@ -90,16 +128,11 @@ def verify(
 
     response = r.json()
 
-    users = auth_utils.read_users_from_db()
+    print(threading.current_thread().ident)
     if response.get('action'):
         action = response.get('action')
         if action.find('verify') >= 0:
-            def set_verified_email(info):
-                if info.get('email') == email:
-                    info['is_verified'] = True
-                return info.get('email'), info.get('is_verified')
-            new_users = list(map(set_verified_email, users))
-            auth_utils.write_all_users_to_db(new_users)
+            auth_utils.update_verification(email=email, is_verified=True)
 
     return response
 

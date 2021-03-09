@@ -9,7 +9,7 @@ class LoginRequestSchema(BaseModel):
 
 class LoginResponseSchema(BaseModel):
     is_success: bool = Field(default=True)
-    is_verified: bool = Field(default=True)
+    is_verified: bool = Field(default=False)
     email: EmailStr
 
 
@@ -18,7 +18,7 @@ class SignupRequestSchema(BaseModel):
 
 
 class SignupResponseSchema(BaseModel):
-    is_success: bool = Field(default=True)
+    is_success: bool = Field(default=False)
     is_verified: bool = Field(default=False)
     email: EmailStr
 

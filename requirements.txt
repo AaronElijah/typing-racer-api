@@ -4,3 +4,6 @@ uvicorn==0.13.3
 requests==2.25.1
 bcrypt==3.2.0
 email-validator==1.1.1
+boto3==1.17.13
+boto3-stubs==1.17.13.0
+mypy-boto3-dynamodb==1.17.13.0

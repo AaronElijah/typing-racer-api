@@ -9,6 +9,7 @@ import authorization
 import temp
 import words
 
+
 os.environ['PYTHONHASHSEED'] = '0'
 
 app = FastAPI()
